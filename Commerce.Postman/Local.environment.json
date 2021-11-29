@@ -1,0 +1,39 @@
+{
+	"id": "1faed952-f339-493d-beea-1dd0c23d69c5",
+	"name": "Local",
+	"values": [
+		{
+			"key": "domain",
+			"value": "http://localhost:5099",
+			"enabled": true
+		},
+		{
+			"key": "customersEndpoint",
+			"value": "/api/Customers",
+			"enabled": true
+		},
+		{
+			"key": "ordersEndpoint",
+			"value": "/api/customers/{{customerId}}/orders",
+			"enabled": true
+		},
+		{
+			"key": "customerId",
+			"value": "ad4be924-2dd8-4802-99e8-e0e2bc69bc76",
+			"enabled": true
+		},
+		{
+			"key": "invalidCustomerId",
+			"value": "00000000-0000-0000-0000-000000000000",
+			"enabled": true
+		},
+		{
+			"key": "invalidOrdersEndpoint",
+			"value": "/api/customers/{{invalidCustomerId}}/orders",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-11-29T04:08:06.227Z",
+	"_postman_exported_using": "Postman/9.1.5"
+}

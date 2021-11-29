@@ -1,0 +1,583 @@
+{
+	"info": {
+		"_postman_id": "cd9d7bb9-bbe5-4f63-83ab-67881fcde50b",
+		"name": "Commerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "POST - Add a customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Customer created successfully.\", function () {    \r",
+									"    pm.expect(responseData.statusCode).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"if (responseData.value != undefined)\r",
+									"{\r",
+									"    var customerId = responseData.value.id;\r",
+									"    pm.environment.set(\"customerId\", customerId);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"avls\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Add a customer without providing the required values",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to created a customer with invalid data.\", function () {    \r",
+									"    pm.expect(responseData.status).to.be.oneOf([400]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The errors property contains data.\", function () {    \r",
+									"    pm.expect(responseData.errors).to.be.a('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The errors property contains the Name errors.\", function () {    \r",
+									"    var errors = responseData.errors;\r",
+									"    pm.expect(errors.Name).to.be.a('array');\r",
+									"    pm.expect(errors.Name[0]).contains(\"'Name' must not be empty.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Retrieve all the customers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Retrieved the existing customers successfully.\", function () {    \r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"    pm.expect(responseData.value.length).gt(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Retrieve a customer by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Retrieved the existing customers successfully.\", function () {    \r",
+									"\r",
+									"    var customerData = responseData.value;\r",
+									"    var customerId = pm.environment.get(\"customerId\");\r",
+									"\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"    pm.expect(customerData.id).to.eql(customerId);\r",
+									"    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{customerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{customerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Retrieve an invalid customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to load an invalid customer.\", function () {    \r",
+									"    pm.expect(responseData.statusCode).to.be.oneOf([404]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{invalidCustomerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{invalidCustomerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Update an invalid customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to update an invalid customer.\", function () {    \r",
+									"    pm.expect(responseData.statusCode).to.be.oneOf([404]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"This is my latest personal data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{invalidCustomerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{invalidCustomerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Update an existing customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Updated an existing customer successfully.\", function () {        \r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"    pm.expect(responseData.statusCode).to.eql(204);\r",
+									"    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"This is my latest personal data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{customerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{customerId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "POST - Add an order for a customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code matches with a successful response.\", function () {    \r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The purchase cost was calculated successfully.\", function () {        \r",
+									"    pm.expect(responseData).to.eql(100);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n  \"orderLines\": [\r\n    {\r\n      \"sku\": \"A0001\",\r\n      \"quantity\": 5,\r\n      \"retailPrice\": 20\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{ordersEndpoint}}",
+							"host": [
+								"{{domain}}{{ordersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Add an order with invalid product data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code matches with a BadRequest response.\", function () {    \r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The response includes the errors.\", function () {    \r",
+									"    var errors = responseData.errors;\r",
+									"    pm.expect(errors.length).gt(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n  \"orderLines\": [\r\n    {\r\n      \"sku\": \"A0001\",\r\n      \"quantity\": 5,\r\n      \"retailPrice\": 20\r\n    },\r\n    {\r\n      \"sku\": \"AD100\",\r\n      \"quantity\": 2,\r\n      \"retailPrice\": 16\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{ordersEndpoint}}",
+							"host": [
+								"{{domain}}{{ordersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Add an order without order lines",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code matches with a BadRequest response.\", function () {    \r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The response includes the errors.\", function () {    \r",
+									"    var errors = responseData.errors;\r",
+									"    pm.expect(errors.length).gt(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n  \"orderLines\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{ordersEndpoint}}",
+							"host": [
+								"{{domain}}{{ordersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Add an order for an invalid customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to create an order for an invalid customer.\", function () {    \r",
+									"    var errors = responseData.errors;\r",
+									"    pm.expect(errors[0].message).contains(\"Invalid customerId\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code matches with a BadRequest.\", function () {    \r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n  \"orderLines\": [\r\n    {\r\n      \"sku\": \"A0001\",\r\n      \"quantity\": 5,\r\n      \"retailPrice\": 20\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}{{invalidOrdersEndpoint}}",
+							"host": [
+								"{{domain}}{{invalidOrdersEndpoint}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers - Remove",
+			"item": [
+				{
+					"name": "DELETE - Remove an existing customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Removed an existing customer successfully.\", function () {        \r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"    pm.expect(responseData.statusCode).to.eql(204);\r",
+									"    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{customerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{customerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Remove a previously removed customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to remove a previously removed customer.\", function () {        \r",
+									"    pm.expect(responseData.statusCode).to.eql(404);    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{customerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{customerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Remove an invalid customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Failed to remove an invalid customer.\", function () {        \r",
+									"    pm.expect(responseData.statusCode).to.eql(404);    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}{{customersEndpoint}}/{{invalidCustomerId}}",
+							"host": [
+								"{{domain}}{{customersEndpoint}}"
+							],
+							"path": [
+								"{{invalidCustomerId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
